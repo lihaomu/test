@@ -3,7 +3,7 @@
         <Time :time="time"></Time>
         <br>
         <o-button type="text">
-            <a :href="url" target="_blank">QQ客服</a>
+            <a :href="url" target="_blank">QQ客服 {{ url }}</a>
         </o-button>
     </div>
 </template>
