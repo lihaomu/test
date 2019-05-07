@@ -5,12 +5,13 @@ import store from './store'
 
 import Leo from 'leo-ui'
 import 'leo-ui/dist/css/app.css'
+
 Vue.use(Leo);
 
 Vue.config.productionTip = false;
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app');
