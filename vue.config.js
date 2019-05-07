@@ -1,7 +1,7 @@
 module.exports = {
   productionSourceMap: false,
 
-  baseUrl: process.env.NODE_ENV === 'production' ? './' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
 
   filenameHashing: false,
   devServer: {
