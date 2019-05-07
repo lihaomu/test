@@ -9,7 +9,7 @@
 </template>
 
 <script>
-    import { isPc, isAndroid } from './utils/index'
+    import { isPc, isWeixin, isAndroid } from './utils/index'
 
     import Time from './components/time/index';
 
@@ -22,7 +22,7 @@
         },
         computed: {
             url() {
-                if (isPc) {
+                if (isPc || isWeixin) {
                     return 'http://wpa.qq.com/msgrd?v=3&uin=2719901709&site=qq&menu=yes';
                 } else {
                     return isAndroid
