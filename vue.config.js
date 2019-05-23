@@ -3,12 +3,11 @@ module.exports = {
 
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
 
-  filenameHashing: false,
   devServer: {
     host: 'localhost',
     port: 1024,
     https: false,
-    open: true,
+    open: false,
     hotOnly: false,
     proxy: null,
     before: app => {

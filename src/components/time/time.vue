@@ -2,46 +2,52 @@
     <span>{{ date }}</span>
 </template>
 <script>
-    import Time from './time';
+    import { getRelativeTime } from './time';
 
     export default {
         name: 'Time',
         props: {
-            time: {
-                type: [Number, Date, String],
-                required: true
+            value: {
+                type: [Date, String, Number],
+                default: Date.now()
+            },
+            interval: {
+                type: Number,
+                default: 1
             }
         },
-        data() {
+        data () {
             return {
                 date: '',
                 timer: null
             }
         },
-        computed: {},
-        methods: {
-            setTime() {
-                const type = typeof this.time;
-                let time;
+        computed: {
+            timestamp () {
+                let value = this.value;
 
-                if (type === 'number') {
-                    const timestamp = this.time.toString().length > 10 ? this.time : this.time * 1000;
-                    time = (new Date(timestamp)).getTime()
-                } else if (type === 'object') {
-                    time = this.time.getTime()
-                } else if (type === 'string') {
-                    time = (new Date(this.time)).getTime()
+                switch (typeof value) {
+                    case 'object':
+                        return value.getTime();
+                    case 'string':
+                        return new Date(value).getTime();
+                    case 'number':
+                        return new Date(value.toString().length > 10 ? value : value * 1000).getTime();
                 }
-
-                this.date = Time(time);
             }
         },
         mounted() {
-            this.setTime();
-            this.timer = setInterval(this.setTime, 1000)
+            const timestamp = this.timestamp;
+
+            this.date = getRelativeTime(timestamp);
+            if (this.interval) {
+                this.timer = setInterval(() => {
+                    this.date = getRelativeTime(timestamp);
+                }, 1000 * this.interval);
+            }
         },
         beforeDestroy() {
-            if (this.timer) clearInterval(this.timer)
+            this.timer && clearInterval(this.timer);
         }
     }
 </script>
