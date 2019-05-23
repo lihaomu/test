@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <div id="map"></div>
         <!--<Time :value="time"></Time>-->
         <!--<div class="divide-40"></div>-->
         <!--<o-button type="text">-->
@@ -40,18 +39,18 @@
         <!--<div class="test" v-drag-select="{ selector: 'div.test-item', className: ['active'] }">-->
             <!--<div class="test-item" v-for="(item, i) in list">测试-{{ i }}</div>-->
         <!--</div>-->
+        <div id="map" ref="map"></div>
+        <o-load type="dot" :visible="loading" fix></o-load>
     </div>
 </template>
 
 <script>
-    import Bus from './utils/bus'
+    import loadBMapScript from './utils/loadBMapScript';
+
     import { isPc, isWeixin, isAndroid } from './utils/index'
     import Barrage from './utils/barrage'
     import dragSelect from './utils/dragSelect'
-
     import Time from './components/time/index';
-
-    new Bus()
 
     export default {
         components: { Time },
@@ -64,7 +63,10 @@
                 description: null,
 
                 barrage: null,
-                value: ''
+                value: '',
+
+                loading: false,
+                map: null,
             }
         },
         computed: {
@@ -109,6 +111,21 @@
         },
         mounted () {
             if (this.$refs.live) this.barrage = new Barrage(this.$refs.live);
+            if (this.$refs.map) {
+                this.loading = true;
+                loadBMapScript().then(() => {
+                    this.map = new BMap.Map('map');
+                    this.map.enableContinuousZoom();
+                    this.map.enableScrollWheelZoom();
+
+                    const geolocation = new BMap.Geolocation();
+                    geolocation.getCurrentPosition(res => {
+                        this.loading = false;
+                        geolocation.getStatus() === BMAP_STATUS_SUCCESS
+                            && this.map.centerAndZoom(res.point, 18)
+                    }, { enableHighAccuracy: true });
+                })
+            }
         }
     }
 </script>
@@ -131,8 +148,9 @@
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        text-align: center;
         min-height: calc(100vh);
+        text-align: center;
+        position: relative;
     }
     .divide-40 {
         height: 40px;
