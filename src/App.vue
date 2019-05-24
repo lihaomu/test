@@ -40,11 +40,13 @@
             <!--<div class="test-item" v-for="(item, i) in list">测试-{{ i }}</div>-->
         <!--</div>-->
         <div id="map" ref="map"></div>
+        <o-input v-model="search" @on-enter="handleSearch"></o-input>
         <o-load type="dot" :visible="loading" fix></o-load>
     </div>
 </template>
 
 <script>
+    import icon from './assets/marker.png'
     import loadBMapScript from './utils/loadBMapScript';
 
     import { isPc, isWeixin, isAndroid } from './utils/index'
@@ -65,8 +67,9 @@
                 barrage: null,
                 value: '',
 
-                loading: false,
                 map: null,
+                search: '科苑北',
+                loading: false,
             }
         },
         computed: {
@@ -107,6 +110,70 @@
             },
             dragSelected (elements) {
                 console.log(elements);
+            },
+            handleSearch () {
+                if (this.search) {
+                    this.loading = true;
+                    this.map.clearOverlays();
+
+                    this.searchBus(this.search).then(res => { this.addMarker(res) })
+                }
+            },
+            searchBus (data) {
+                return new Promise(resolve => {
+                    new BMap.LocalSearch('深圳', {
+                        onSearchComplete: res => {
+                            this.loading = false;
+
+                            const length = res.getCurrentNumPois();
+                            const result = new Array(length).fill(null)
+                                .map((item, i) => res.getPoi(i))
+                                .find(poi => poi.type === BMAP_POI_TYPE_BUSSTOP && poi.title === data);
+                            result && resolve(result);
+                        }
+                    }).search(data);
+                })
+            },
+            addMarker (data) {
+                const busLine = new BMap.BusLineSearch(this.map, {
+                    onGetBusListComplete: res => {
+                        busLine.getBusLine(res.getBusListItem(0));
+                    },
+                    onGetBusLineComplete: res => {
+                        const polyline = new BMap.Polyline(res.getPath(), {
+                            strokeWeight: 5,
+                            strokeOpacity: .7,
+                            strokeColor: '#' + (~~ (Math.random() * (1 << 24))).toString(16)
+                        });
+                        this.map.addOverlay(polyline);
+
+                        const length = res.getNumBusStations();
+                        new Array(length).fill(null).forEach((item, i) => {
+                            const busStation = res.getBusStation(i);
+                            this.searchBus(busStation.name).then(res => { this.addBusMarker(res) })
+                        })
+                    }
+                });
+
+                const marker = new BMap.Marker(data.point);
+                this.map.addOverlay(marker);
+                this.map.panTo(data.point);
+
+                const buses = data.address.replace(/\s*/g, '').split(';');
+                const sleep = () => new Promise(resolve => { setTimeout(resolve, 100) });
+
+                (async () => {
+                    for (let i = 0; i < buses.length; i++) {
+                        await sleep();
+                        busLine.getBusList(buses[i])
+                    }
+                })()
+            },
+            addBusMarker (data) {
+                const busIcon = new BMap.Icon(icon, new BMap.Size(10,10))
+                const marker  = new BMap.Marker(data.point, { icon: busIcon });
+                marker.setTitle(data.title);
+                this.map.addOverlay(marker);
             }
         },
         mounted () {
@@ -117,12 +184,13 @@
                     this.map = new BMap.Map('map');
                     this.map.enableContinuousZoom();
                     this.map.enableScrollWheelZoom();
+                    this.map.centerAndZoom('深圳', 18);
 
                     const geolocation = new BMap.Geolocation();
                     geolocation.getCurrentPosition(res => {
                         this.loading = false;
                         geolocation.getStatus() === BMAP_STATUS_SUCCESS
-                            && this.map.centerAndZoom(res.point, 18)
+                            && this.map.panTo(res.point)
                     }, { enableHighAccuracy: true });
                 })
             }
@@ -157,7 +225,13 @@
     }
 
     #map {
-     height: 100vh;
+        height: 100vh;
+        & + .leo-input {
+            top: 20px;
+            left: 20px;
+            width: 25%;
+            position: absolute;
+        }
     }
     .live {
         width: 900px;
