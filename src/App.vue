@@ -40,7 +40,7 @@
             <!--<div class="test-item" v-for="(item, i) in list">测试-{{ i }}</div>-->
         <!--</div>-->
         <div id="map" ref="map"></div>
-        <o-input v-model="search" @on-enter="handleSearch"></o-input>
+        <o-input v-model="search" @on-enter="handleSearch" :style="styles"></o-input>
         <o-load type="dot" :visible="loading" fix></o-load>
     </div>
 </template>
@@ -84,6 +84,11 @@
             },
             list () {
                 return new Array(10).fill(null)
+            },
+            styles () {
+                return {
+                    width: isPc ? '25%' : 'calc(100% - 40px)'
+                }
             }
         },
         directives: {
@@ -116,7 +121,10 @@
                     this.loading = true;
                     this.map.clearOverlays();
 
-                    this.searchBus(this.search).then(res => { this.addMarker(res) })
+                    this.searchBus(this.search).then(res => {
+                        this.addMarker(res);
+                        this.map.setZoom(12);
+                    })
                 }
             },
             searchBus (data) {
@@ -135,23 +143,35 @@
                 })
             },
             addMarker (data) {
+                const points  = [];
                 const busLine = new BMap.BusLineSearch(this.map, {
                     onGetBusListComplete: res => {
                         busLine.getBusLine(res.getBusListItem(0));
                     },
                     onGetBusLineComplete: res => {
-                        const polyline = new BMap.Polyline(res.getPath(), {
-                            strokeWeight: 5,
+                        const points = res.getPath();
+                        const style = {
+                            strokeWeight: 2,
                             strokeOpacity: .7,
                             strokeColor: '#' + (~~ (Math.random() * (1 << 24))).toString(16)
-                        });
-                        this.map.addOverlay(polyline);
+                        };
 
-                        const length = res.getNumBusStations();
-                        new Array(length).fill(null).forEach((item, i) => {
-                            const busStation = res.getBusStation(i);
-                            this.searchBus(busStation.name).then(res => { this.addBusMarker(res) })
-                        })
+                        (async () => {
+                            for (let i = 0; i < points.length - 1; i++) {
+                                this.map.addOverlay(new BMap.Polyline(points.slice(i, i + 2), style));
+                            }
+                        })()
+
+
+
+                        // const length = res.getNumBusStations();
+                        // new Array(length).fill(null).forEach((item, i) => {
+                        //     const busStation = res.getBusStation(i);
+                        //     this.searchBus(busStation.name).then(res => {
+                        //         this.addBusMarker(res);
+                        //         points.push(res.point);
+                        //     })
+                        // })
                     }
                 });
 
@@ -160,14 +180,17 @@
                 this.map.panTo(data.point);
 
                 const buses = data.address.replace(/\s*/g, '').split(';');
-                const sleep = () => new Promise(resolve => { setTimeout(resolve, 100) });
+                const sleep = (delay) => new Promise(resolve => { setTimeout(resolve, 100 || delay) });
 
                 (async () => {
                     for (let i = 0; i < buses.length; i++) {
-                        await sleep();
-                        busLine.getBusList(buses[i])
+                        await sleep(0);
+                        busLine.getBusList(buses[i]);
                     }
-                })()
+
+                    // const { center } = this.map.getViewport(eval(points));
+                    // this.map.panTo(center);
+                })();
             },
             addBusMarker (data) {
                 const busIcon = new BMap.Icon(icon, new BMap.Size(10,10))
@@ -229,7 +252,6 @@
         & + .leo-input {
             top: 20px;
             left: 20px;
-            width: 25%;
             position: absolute;
         }
     }
