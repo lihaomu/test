@@ -39,17 +39,22 @@
         <!--<div class="test" v-drag-select="{ selector: 'div.test-item', className: ['active'] }">-->
             <!--<div class="test-item" v-for="(item, i) in list">测试-{{ i }}</div>-->
         <!--</div>-->
-        <div id="map" ref="map"></div>
-        <o-input v-model="search" @on-enter="handleSearch" :style="styles"></o-input>
-        <o-load type="dot" :visible="loading" fix></o-load>
+        <header class="mui-bar mui-bar-nav">
+            <h1 class="mui-title">{{title}}</h1>
+        </header>
+        <div class="mui-content mui-content-padded">
+            <p>定位城市：{{city}}</p>
+            <p>网络信息：{{networkType}}</p>
+        </div>
+        <!--<div id="map" ref="map"></div>-->
+        <!--<o-input v-model="search" @on-enter="handleSearch" :style="styles"></o-input>-->
+        <!--<o-load type="dot" :visible="loading" fix></o-load>-->
     </div>
 </template>
 
 <script>
     import icon from './assets/marker.png'
     import loadBMapScript from './utils/loadBMapScript';
-    
-    import plusReady from './utils/plusReady'
 
     import { isPc, isWeixin, isAndroid } from './utils/index'
     import Barrage from './utils/barrage'
@@ -63,7 +68,7 @@
                 time: new Date('2019/5/15 16:47:22'),
 
                 phone: null,
-                title: null,
+                title: 'hello vue-html5plus!',
                 description: null,
 
                 barrage: null,
@@ -72,6 +77,9 @@
                 map: null,
                 search: '科苑北',
                 loading: false,
+
+                city: '',
+                networkType: ''
             }
         },
         computed: {
@@ -202,10 +210,6 @@
             }
         },
         mounted () {
-            console.log(navigator);
-            plusReady(() => {
-                alert(2);
-            })
             if (this.$refs.live) this.barrage = new Barrage(this.$refs.live);
             if (this.$refs.map) {
                 this.loading = true;
@@ -223,6 +227,14 @@
                     }, { enableHighAccuracy: true });
                 })
             }
+        },
+        plusReady: function () {
+            // 获取定位信息
+            this.$geolocation.getCurrentPosition().then(function (position) {
+                this.city = position.address.city;
+            });
+            // 获取网络信息
+            this.networkType = this.$networkinfo.getCurrentNetworkType();
         }
     }
 </script>

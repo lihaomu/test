@@ -10,6 +10,7 @@
     "leancloud-storage": "^3.13.0",
     "leo-ui": "^1.1.0",
     "vue": "^2.6.6",
+    "vue-html5plus": "^1.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
