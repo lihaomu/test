@@ -39,9 +39,10 @@
         <!--<div class="test" v-drag-select="{ selector: 'div.test-item', className: ['active'] }">-->
             <!--<div class="test-item" v-for="(item, i) in list">测试-{{ i }}</div>-->
         <!--</div>-->
-        <div id="map" ref="map"></div>
-        <o-input v-model="search" @on-enter="handleSearch" :style="styles"></o-input>
-        <o-load type="dot" :visible="loading" fix></o-load>
+        <div ref="test">{{ test }}</div>
+        <!--<div id="map" ref="map"></div>-->
+        <!--<o-input v-model="search" @on-enter="handleSearch" :style="styles"></o-input>-->
+        <!--<o-load type="dot" :visible="loading" fix></o-load>-->
     </div>
 </template>
 
@@ -70,6 +71,8 @@
                 map: null,
                 search: '科苑北',
                 loading: false,
+
+                test: null
             }
         },
         computed: {
@@ -200,6 +203,8 @@
             }
         },
         mounted () {
+            this.test = navigator.userAgent;
+            alert((/Html5Plus\/.+\s\(.*(Immersed\/(\d+\.?\d*).*)\)/gi).exec(this.test));
             if (this.$refs.live) this.barrage = new Barrage(this.$refs.live);
             if (this.$refs.map) {
                 this.loading = true;
