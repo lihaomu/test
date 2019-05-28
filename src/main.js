@@ -6,14 +6,7 @@ import store from './store'
 import leo from 'leo-ui'
 import 'leo-ui/dist/css/app.css'
 
-// import mui from 'vue-awesome-mui'
-// import 'vue-awesome-mui/mui/dist/css/mui.css'
-
-import VueHtml5Plus from 'vue-html5plus'
-
 Vue.use(leo);
-// Vue.use(mui);
-Vue.use(VueHtml5Plus);
 
 window.AV = require('leancloud-storage');
 
