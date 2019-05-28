@@ -241,12 +241,12 @@
     @ratio : ~"200/100";
     @media screen and (min-aspect-ratio:@ratio){
         .direction_land{
-            #map {
+            #app {
                 padding-left: @notch;
             }
         }
         .direction_land_ops{
-            #map {
+            #app {
                 padding-right: @notch;
             }
         }
