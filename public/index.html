@@ -3,8 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!--<meta name="viewport" content="width=device-width,initial-scale=1.0">-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,viewport-fit=cover">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title>test</title>
   </head>
@@ -14,53 +13,5 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-    <script>
-      (function(win, doc) {
-        if (!win.addEventListener) return;
-        var html = document.documentElement;
-
-        function setFont(cb) {
-          var w = html.clientWidth,
-                  h = html.clientHeight;
-          html.style.fontSize = w > h ? w / 1334 * 100 + "px" : w / 750 * 100 + "px";
-          if (cb && typeof(cb) == "function") {
-            cb()
-          }
-        }
-        setFont();
-        doc.addEventListener('DOMContentLoaded', setFont, false);
-        win.addEventListener('resize', setFont, false);
-        win.addEventListener('load', setFont, false);
-      })(window, document);
-
-      const orientationDetect = () => {
-        let displayStr = '';
-        if (displayStr.length > 0) {
-          $(document.body).removeClass(displayStr);
-        }
-        switch (window.orientation) {
-          case 0:
-            //刘海在上边
-            displayStr = "direction_por";
-            break;
-          case -90:
-            //刘海在右边
-            displayStr = "direction_land_ops";
-            break;
-          case 90:
-            //刘海在左边
-            displayStr = "direction_land";
-            break;
-          case 180:
-            //刘海在下边
-            displayStr = "direction_por_ops";
-            break;
-        }
-        $(document.body).addClass(displayStr);
-      };
-      window.addEventListener("DOMContentLoaded", orientationDetect, false);
-      window.addEventListener("orientationchange", orientationDetect, false);
-    </script>
-    <script src="https://ossweb-img.qq.com/images/js/zepto/zepto.min.js"></script>
   </body>
 </html>

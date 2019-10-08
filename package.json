@@ -7,9 +7,17 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "leancloud-storage": "^3.13.0",
-    "leo-ui": "^1.1.0",
+    "@sentry/browser": "^5.6.3",
+    "@sentry/integrations": "^5.6.1",
+    "element-ui": "^2.12.0",
+    "ingame": "0.0.3",
+    "iview": "^3.5.1",
+    "leo-ui": "^1.3.1",
+    "logrocket": "^1.0.3",
+    "prerender-spa-plugin": "^3.4.0",
+    "puppeteer": "^1.19.0",
     "vue": "^2.6.6",
+    "vue-preview": "^1.1.3",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
