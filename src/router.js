@@ -9,7 +9,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/map'
+            redirect: '/live'
         },
         {
             path: '/map',
@@ -25,6 +25,11 @@ export default new Router({
             path: '/time',
             name: 'TimeView',
             component: () => import('./views/TimeView.vue')
+        },
+        {
+            path: '/three',
+            name: 'ThreeView',
+            component: () => import('./views/ThreeView.vue')
         },
         {
             path: '*',

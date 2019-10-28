@@ -28,7 +28,6 @@ import './styles/index.less'
 import leo from 'leo-ui'
 import 'leo-ui/lib/leo-ui.css'
 
-// Vue.use(Load);
 Vue.use(leo);
 
 Vue.config.productionTip = false;
