@@ -16,7 +16,7 @@
     "logrocket": "^1.0.3",
     "prerender-spa-plugin": "^3.4.0",
     "puppeteer": "^1.19.0",
-    "three": "^0.109.0",
+    "three": "^0.125.0",
     "three-obj-mtl-loader": "^1.0.3",
     "three-orbit-controls": "^82.1.0",
     "vue": "^2.6.6",
